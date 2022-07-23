@@ -18,7 +18,8 @@ class PostSerializer(serializers.ModelSerializer):
             'image',
             'url',
             'created',
-            'modifiedBy'
+            'modifiedBy',
+            'slug'
         ]
 
     @staticmethod

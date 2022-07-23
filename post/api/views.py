@@ -6,6 +6,7 @@ from rest_framework.generics import (
     RetrieveUpdateAPIView,
     CreateAPIView
 )
+from rest_framework.mixins import DestroyModelMixin
 from rest_framework.permissions import (
     IsAuthenticated,
 )
@@ -43,11 +44,14 @@ class PostDeleteAPIView(DestroyAPIView):
     permission_classes = [IsOwner]
 
 
-class PostUpdateAPIView(RetrieveUpdateAPIView):
+class PostUpdateAPIView(RetrieveUpdateAPIView, DestroyModelMixin):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     lookup_field = 'slug'
     permission_classes = [IsOwner]
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
     def perform_update(self, serializer):
         serializer.save(modifiedBy=self.request.user)

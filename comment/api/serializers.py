@@ -1,6 +1,8 @@
+from django.contrib.auth.models import User
 from rest_framework import serializers
 
 from comment.models import Comment
+from post.models import Post
 
 
 class CommentCreateSerializer(serializers.ModelSerializer):
@@ -16,8 +18,22 @@ class CommentCreateSerializer(serializers.ModelSerializer):
         return attrs
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        exclude = ('password',)
+
+
+class PostCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ('title', 'slug', 'id')
+
+
 class CommentListSerializer(serializers.ModelSerializer):
     replies = serializers.SerializerMethodField()
+    user = UserSerializer()
+    post = PostCommentSerializer()
 
     class Meta:
         model = Comment
@@ -26,6 +42,7 @@ class CommentListSerializer(serializers.ModelSerializer):
     def get_replies(self, obj):
         if obj.any_children:
             return CommentListSerializer(obj.children(), many=True).data
+
 
 class CommentDeleteUpdateSerializer(serializers.ModelSerializer):
     class Meta:

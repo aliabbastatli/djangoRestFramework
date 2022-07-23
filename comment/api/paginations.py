@@ -1,5 +1,5 @@
 from rest_framework.pagination import PageNumberPagination
 
 
-class PostPagination(PageNumberPagination):
+class CommentPagination(PageNumberPagination):
     page_size = 4
